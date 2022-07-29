@@ -8,7 +8,8 @@ public class PrinterWithPrefixImpl implements Printer {
 
     public PrinterWithPrefixImpl(Renderer renderer) {
         this.renderer = renderer;
-        this.prefix = "def";
+//        this.prefix = "def ";
+        this.prefix = null + " ";
     }
 
     public void setPrefix(String prefix) {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="processorLow"
+          class="preprocessor.PreProcessorToLowerImpl">
+    </bean>
+
+    <bean id="processorUp"
+          class="preprocessor.PreProcessorToUpperImpl">
+    </bean>
+
+    <bean id = "rendererErr"
+          class="renderer.RendererErrImpl">
+        <constructor-arg name="preProcessor" ref = "processorLow" />
+    </bean>
+
+    <bean id = "rendererSt"
+          class="renderer.RendererStandartImpl">
+        <constructor-arg name="preProcessor" ref = "processorUp" />
+    </bean>
+
+    <bean id="printerWithPrefixSt"
+          class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rendererSt"/>
+        <property name="prefix" value="IT IS SPARTA!!!"/>
+    </bean>
+
+    <bean id="printerWithPrefixErr"
+          class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rendererErr"/>
+        <property name="prefix" value="IT IS SPARTA!!!"/>
+    </bean>
+
+
+
+
+    <bean id="printerWithPrefixStDate"
+          class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rendererSt"/>
+    </bean>
+
+    <bean id="printerWithPrefixErrDate"
+          class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rendererErr"/>
+    </bean>
+
+
+</beans>
