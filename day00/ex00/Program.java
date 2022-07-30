@@ -16,5 +16,6 @@ public class Program {
         sum += number % 10;
 
         System.out.println(sum);
+
     }
 }
