@@ -1,5 +1,5 @@
 package renderer;
 
 public interface Renderer {
-    void printText(String text);
+    void printText(String str);
 }

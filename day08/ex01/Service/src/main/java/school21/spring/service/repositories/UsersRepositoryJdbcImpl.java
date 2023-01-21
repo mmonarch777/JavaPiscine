@@ -12,113 +12,105 @@ import java.util.List;
 import java.util.Optional;
 
 public class UsersRepositoryJdbcImpl implements UsersRepository {
-    HikariDataSource ds;
 
-    private final String SQL_FIND_BY_ID = "SELECT * FROM users WHERE id=?;";
-    private final String SQL_SAVE = "INSERT INTO users (email) VALUES(?);";
-    private final String SQL_UPDATE = "UPDATE users SET email = ? WHERE id = ?;";
-    private final String SQL_DELETE = "DELETE FROM users WHERE id=?;";
-    private final String SQL_FIND_ALL = "SELECT * FROM users;";
-    private final String SQL_FIND_BY_EMAIL = "SELECT * FROM users WHERE id=?;";
+    HikariDataSource ds;
 
     public UsersRepositoryJdbcImpl(HikariDataSource dataSource) {
         this.ds = dataSource;
     }
-
-
     @Override
     public User findById(Long id) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
-            statement.setLong(1, id);
-            User findUser = null;
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Long userId = resultSet.getLong("id");
-                String userEmail = resultSet.getString("email");
-                findUser = new User(userId, userEmail);
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("select * from users where id=?;");
+            ps.setLong(1, id);
+            User user = null;
+            ResultSet rSet = ps.executeQuery();
+            if (rSet.next()) {
+                Long userId = rSet.getLong("id");
+                String userEmail = rSet.getString("email");
+                user = new User(userId, userEmail);
             }
-            resultSet.close();
-            return findUser;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            rSet.close();
+            return user;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
         return null;
     }
 
     @Override
     public List<User> findAll() {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL)) {
-            List<User> listAll = new LinkedList<>();
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                listAll.add(new User(resultSet.getLong("id"), resultSet.getString("email")));
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("select * from users;");
+            ResultSet rSet = ps.executeQuery();
+            List<User> list = new LinkedList<>();
+            while (rSet.next()) {
+                list.add(new User(rSet.getLong("id"), rSet.getString("email")));
             }
-            return listAll;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            return list;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
         return null;
     }
 
     @Override
     public void save(User entity) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SAVE)) {
-            statement.setString(1, entity.getEmail());
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                entity.setId(resultSet.getLong(1));
+        try(Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("insert into users (email) values(?);");
+            ps.setString(1, entity.getEmail());
+            ps.executeUpdate();
+            ResultSet rSet = ps.getGeneratedKeys();
+            if (rSet.next()) {
+                entity.setId(rSet.getLong(1));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 
     @Override
     public void update(User entity) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE)) {
-            statement.setLong(2, entity.getId());
-            statement.setString(1, entity.getEmail());
-            statement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("update users set email=? where id=?;");
+            ps.setString(1, entity.getEmail());
+            ps.setLong(2, entity.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 
     @Override
     public void delete(Long id) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_DELETE)) {
-            statement.setLong(1, id);
-            statement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("delete from users where id=?;");
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_EMAIL)) {
-            statement.setString(2, email);
-            User findUser = null;
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Long userId = resultSet.getLong("id");
-                String userEmail = resultSet.getString("email");
-                findUser = new User(userId, userEmail);
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("select * from users where email=?;");
+            ps.setString(1, email);
+            ResultSet rSet = ps.executeQuery();
+            User user = null;
+            if (rSet.next()) {
+                Long userId = rSet.getLong("id");
+                String userEmail = rSet.getString("email");
+                user = new User(userId, userEmail);
             }
-            resultSet.close();
-            if (findUser != null) {
-                return Optional.of(findUser);
+            rSet.close();
+            if (user != null) {
+                return Optional.of(user);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
-        return Optional.empty();
+        return  Optional.empty();
     }
 }

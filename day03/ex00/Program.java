@@ -1,46 +1,34 @@
-public class Program implements Runnable {
-     private static int number;
-     private static final int START = 8;
-     final int count;
-     final String string;
-
-     public static void main(String[] args) throws InterruptedException {
-          if (args.length != 1 || !args[0].startsWith("--count=")) {
-               System.err.println("Bad argument!");
-               System.exit(-1);
-          }
-          String numStr = args[0].substring(START);
-          try {
-               number = Integer.parseInt(numStr);
-          } catch (NumberFormatException e) {
-               System.out.println("Bad argument!");
-               System.exit(-1);
-          }
 
 
-          Thread eggThread = new Thread(new Program(number, "Egg"));
-          Thread henThread = new Thread(new Program(number, "Hen"));
+public class Program {
+    private static final String var = "Human";
+    public static void main(String[] args) {
+        if (args.length != 1 || !args[0].startsWith("--count=")) {
+            System.err.println("Wrong argument.");
+            System.err.println("Example : --count=50");
+            System.exit(-1);
+        }
 
-          eggThread.start();
-          henThread.start();
+        int counter = 0;
+        try {
+            counter = Integer.parseInt(args[0].substring(8));
+        } catch (NumberFormatException e) {
+            System.err.println("error: " + e.getMessage());
+        }
+        Thread egg = new Thread(new Egg(counter), "Egg");
+        Thread hen = new Thread(new Hen(counter), "Hen");
 
-          eggThread.join();
-          henThread.join();
+        egg.start();
+        hen.start();
 
-          for (int i = 0; i < number; i++) {
-               System.out.println("Human");
-          }
-     }
-
-     public Program(int count, String string) {
-          this.count = count;
-          this.string = string;
-     }
-
-     @Override
-     public void run() {
-          for (int i = 0; i < count; i++) {
-               System.out.println(string);
-          }
-     }
+        try {
+            egg.join();
+            hen.join();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        for (int i = 0; i < counter; i++) {
+            System.out.println(var);
+        }
+    }
 }

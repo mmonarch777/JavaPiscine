@@ -1,53 +1,60 @@
-public class Program implements Runnable{
-    private static final int START = 8;
-    private static int number;
-    private static int key = 0;
-    final int count;
-    final String string;
-    final int status;
 
-    public Program(int count, String string, int status) {
-        this.count = count;
-        this.string = string;
-        this.status = status;
-    }
 
-    @Override
-    public void run() {
-        int i = 0;
-        while (i < count) {
-            synchronized (Program.class) {
-                if (key != status) {
-                    System.out.println(string);
-                    key = status;
-                    i++;
-                }
+public class Program {
+    public static  boolean flag = false;
+
+
+    public static synchronized void sayHen() {
+        if (!flag) {
+            try {
+                Program.class.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+
+        System.out.println("Hen");
+        flag = false;
+        Program.class.notify();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static synchronized void sayEgg() {
+        if (flag) {
+            try {
+                Program.class.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Egg");
+        flag = true;
+        Program.class.notify();
+    }
+    public static void main(String[] args) {
         if (args.length != 1 || !args[0].startsWith("--count=")) {
-            System.err.println("Bad argument!");
+            System.err.println("Wrong argument.");
+            System.err.println("Example : --count=50");
             System.exit(-1);
         }
-        String numStr = args[0].substring(START);
+
+        int counter = 0;
         try {
-            number = Integer.parseInt(numStr);
+            counter = Integer.parseInt(args[0].substring(8));
         } catch (NumberFormatException e) {
-            System.out.println("Bad argument!");
-            System.exit(-1);
+            System.err.println("error: " + e.getMessage());
         }
+        Thread egg = new Thread(new Egg(counter), "Egg");
+        Thread hen = new Thread(new Hen(counter), "Hen");
 
+        egg.start();
+        hen.start();
 
-        Thread eggThread = new Thread(new Program(number, "Egg", 0));
-        Thread henThread = new Thread(new Program(number, "Hen", 1));
-
-        eggThread.start();
-        henThread.start();
-
-        eggThread.join();
-        henThread.join();
+        try {
+            egg.join();
+            hen.join();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
-
 }

@@ -1,55 +1,46 @@
+package day01.ex04;
+
 import java.util.UUID;
 
 public class Transaction {
-    static enum TransactionType {
-        DEBIT,
-        CREDIT
+    enum Category {
+        DEBIT, CREDIT;
     }
 
-    private final UUID identifier = UUID.randomUUID();
-    private final User recipient;
-    private final User sender;
-    private final TransactionType transactionType;
-    private final Integer transferAmount;
+    private UUID id;
+    private User recipient;
+    private User sender;
+    private Category category;
+    private Integer amount;
 
-    Transaction (User recipient, User sender, TransactionType type, Integer transferAmount) {
-        this.recipient = recipient;
-        this.sender = sender;
-        this.transactionType = type;
-        this.transferAmount = transferAmount;
-    }
+    private Transaction next = null;
+    private Transaction prev = null;
 
-    public static Transaction makeTr(User recipient, User sender, TransactionType type, Integer transferAmount)
-    {
-        if (type == TransactionType.CREDIT) {
-            if (transferAmount < 0) {
-                if (sender.getBalance() >= (transferAmount * (-1))) {
-                    sender.setBalance(transferAmount);
-                    recipient.setBalance(transferAmount * (-1));
-                    return new Transaction(recipient, sender, type, transferAmount);
-                } else {
-                    System.out.println(sender.getName() +": not enough money!");
-                    return null;
-                }
-            }
-        } else {
-            if (transferAmount > 0) {
-                if (sender.getBalance() >= transferAmount) {
-                    sender.setBalance(transferAmount * (-1));
-                    recipient.setBalance(transferAmount);
-                    return new Transaction(recipient, sender, type, transferAmount);
-                } else {
-                    System.out.println(sender.getName() +": not enough money!");
-                    return null;
-                }
-            }
+    public Transaction(User send, User rec, Integer amount, Transaction.Category category) {
+        if (send == null || rec == null) {
+            System.err.println("Wrong User");
+            System.exit(-1);
         }
-        System.out.println("Wrong transfer amount!");
-        return null;
+        this.category = category;
+        setAmount(amount);
+        id = UUID.randomUUID();
+        this.recipient = rec;
+        this.sender = send;
+
+    }
+    public void setAmount(Integer amount) {
+        if (category == Transaction.Category.CREDIT) {
+            this.amount = amount > 0 ? 0 : amount;
+        } else if (category == Transaction.Category.DEBIT) {
+            this.amount = amount < 0 ? 0: amount;
+        } else {
+            System.err.println("Wrong category");
+            System.exit(-1);
+        }
     }
 
-    public UUID getIdentifier() {
-        return identifier;
+    public UUID getId() {
+        return id;
     }
 
     public User getRecipient() {
@@ -60,11 +51,49 @@ public class Transaction {
         return sender;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public Transaction.Category getCategory() {
+        return category;
     }
 
-    public  Integer getTransferAmount() {
-        return transferAmount;
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public void setNext(Transaction transaction) {
+        this.next = transaction;
+    }
+    public Transaction getNext() {
+        return this.next;
+    }
+    public void setPrev(Transaction transaction) {
+        this.prev = transaction;
+    }
+    public Transaction getPrev() {
+        return this.prev;
+    }
+
+    @Override
+    public String toString() {
+        return ("\nid         : " + id +
+                "\nsender     : " + sender.getName() +
+                "\nrecipient  : " + recipient.getName() +
+                "\ncategory   : " + category.toString() +
+                "\namount     : " + amount);
     }
 }

@@ -1,60 +1,51 @@
 package app;
 
+import static app.Service.*;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Program {
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+//        PrintStream out = new PrintStream(Files.newOutputStream(Paths.get("out.log")));
+//        System.setErr(out);
         Reflections reflections = new Reflections("classes", new SubTypesScanner(false));
         Set<Class<?>> set = reflections.getSubTypesOf(Object.class);
 
-        List<String> classes = set.stream()
-                .map(Class::getSimpleName)
-                .collect(Collectors.toList());
-
         System.out.println("Classes:");
-
-        for (String aClass : classes) {
-            System.out.println(aClass);
+        for (Class<?> obj : set) {
+            System.out.println(obj.getSimpleName());
         }
-
-        System.out.println("Enter name of the field for changing:");
-
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Enter class name:");
-
-            String result = scanner.nextLine();
-
-            if (!classes.contains(result)) {
-                System.err.println("Error: there is no such class!");
-                return;
+        System.out.println("--------------------------------------");
+        System.out.println("Enter class name:");
+        try (Scanner sc = new Scanner(System.in)) {
+            String name = sc.nextLine();
+            Class<?> selectedClass = checkClass(set, name);
+            if (selectedClass == null) {
+                System.out.println("Wrong class name");
+                System.exit(-1);
             }
-
-            Class<?> clazz = Class.forName("classes" + "." + result);
-            System.out.println("---------------------");
-            ArrayList<String> strings = PrintFields.printFields(clazz);
-            PrintMethods.printMethods(clazz);
-            System.out.println("---------------------");
-            Object object = UpdateObject.createInstance(strings, clazz, scanner);
-
-            if (object == null) {
-                return;
-            }
-
-            System.out.println("---------------------");
-            UpdateObject.updateObject(object, scanner, strings);
-            System.out.println("---------------------");
-            CallMethod.callMethod(object, scanner);
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("--------------------------------------");
+            printFieldsAndMethods(selectedClass);
+            System.out.println("--------------------------------------");
+            System.out.println("Let's create an object.");
+            Object obj = createObject(selectedClass, sc);
+            System.out.println("--------------------------------------");
+            System.out.println("Enter name of the field for changing:");
+            updateField(selectedClass, obj, sc);
+            System.out.println("--------------------------------------");
+            System.out.println("Enter name of the method for call");
+            callMethod(obj, sc);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+//        out.close();
     }
 }

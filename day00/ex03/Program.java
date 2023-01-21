@@ -1,3 +1,5 @@
+package day00.ex03;
+
 import java.util.Scanner;
 
 public class Program {

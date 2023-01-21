@@ -1,3 +1,5 @@
+
+
 public class MyThread extends Thread {
     private int start;
     private int end;
@@ -22,6 +24,8 @@ public class MyThread extends Thread {
         for (int i = start * steps; i <= end; i++) {
             threadSum += array[i];
         }
-        System.out.println("Thread " + (start + 1) + ": from " + (start * steps) + " to " + end + " sum is " + threadSum);
+        System.out.println("Thread " + (start + 1) + ": from "
+                            + (start * steps) + " to " + end
+                            + " sum is " + threadSum);
     }
 }

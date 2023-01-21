@@ -1,19 +1,11 @@
-DROP TABLE IF EXISTS users;
-
-CREATE TABLE IF NOT EXISTS users
-(
-    id SERIAL PRIMARY KEY,
-    email    VARCHAR NOT NULL
+drop table if exists users;
+create table users (
+  id serial primary key,
+  email varchar not null
 );
 
-
-INSERT INTO users (email)
-VALUES ('1@mail.ru');
-INSERT INTO users (email)
-VALUES ('2@mail.ru');
-INSERT INTO users (email)
-VALUES ('3@mail.ru');
-INSERT INTO users (email)
-VALUES ('4@mail.ru');
-INSERT INTO users (email)
-VALUES ('5@mail.ru');
+insert into users(email) values ('1@mail.ru');
+insert into users(email) values ('2@mail.ru');
+insert into users(email) values ('3@mail.ru');
+insert into users(email) values ('4@mail.ru');
+insert into users(email) values ('5@mail.ru');

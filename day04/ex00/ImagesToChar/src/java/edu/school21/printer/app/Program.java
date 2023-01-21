@@ -8,26 +8,22 @@ import java.io.File;
 import java.io.IOException;
 
 public class Program {
-    private static char one;
-    private static char two;
-    private static String imgPath;
-
     public static void main(String[] args) {
         if (args.length != 3) {
-            System.err.println("Error!");
+            System.err.println("Error : arguments");
             System.exit(-1);
         }
-        one = args[0].charAt(0);
-        two = args[1].charAt(0);
-        imgPath = args[2];
+        char white = args[0].charAt(0);
+        char black = args[1].charAt(0);
+        String imgPath = args[2];
 
         BufferedImage img = null;
         try {
             img = ImageIO.read(new File(imgPath));
         } catch (IOException e) {
-            System.err.println("Error!");
+            System.err.printf("Error : %s", e.getMessage());
             System.exit(-1);
         }
-        Logic.convert(img, one, two);
+        Logic.converter(img, white, black);
     }
 }

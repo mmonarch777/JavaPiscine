@@ -1,47 +1,50 @@
-import java.util.UUID;
+package day01.ex03;
 
 public class Program {
     public static void main(String[] args) {
-        User user1 = new User("user1", 10000);
-        User user2 = new User("user2", 22222);
-        User user3 = new User("user3", 33333);
+        User u1 = new User("Mi", 500);
+        User u2 = new User("Ur", 500);
+        Transaction t1 = new Transaction(u1, u2, 100, Transaction.Category.DEBIT);
+        Transaction t2 = new Transaction(u2, u1, -50, Transaction.Category.CREDIT);
 
-        TransactionsList list = new TransactionsLinkedList();
-        user1.setTransactionsList(list);
-        user2.setTransactionsList(list);
-        user3.setTransactionsList(list);
+        u1.getTransactionsList().addTransaction(t1);
+        System.out.println(u1.getTransactionsList().getSize());
+        u1.getTransactionsList().printList();
 
-        Transaction trans1 = Transaction.makeTr(user1, user2, Transaction.TransactionType.CREDIT, -1000);
-        Transaction trans2 = Transaction.makeTr(user2, user3, Transaction.TransactionType.DEBIT, 4342);
-        Transaction trans3 = Transaction.makeTr(user3, user1, Transaction.TransactionType.DEBIT, 500);
-        Transaction trans4 = Transaction.makeTr(user2, user1, Transaction.TransactionType.DEBIT, 100);
+        u1.getTransactionsList().addTransaction(t2);
+        System.out.println(u1.getTransactionsList().getSize());
+        u1.getTransactionsList().printList();
 
-        list.add(trans1);
-        list.add(trans2);
-        user2.setTransactionsList(list);
-        list.add(trans3);
-        list.add(trans4);
+        System.out.println("============================================");
 
-
-        for (Transaction array : list.toArray()) {
-            System.out.println(array);
+        Transaction[] mass = u1.getTransactionsList().toArrayTrans();
+        for (Transaction tr : mass) {
+            System.out.println(tr.toString());
         }
-        System.out.println("---------------------------");
-        list.removeById(trans3.getIdentifier());
-        System.out.println("---------------------------");
-        for (Transaction array : list.toArray()) {
-            System.out.println(array);
-        }
-        System.out.println("---------------------------");
-        System.out.println("---------------------------");
-        for (Transaction array : user2.getTransactionsList().toArray()) {
-            System.out.println(array);
-        }
-        System.out.println("---------------------------");
-        System.out.println("---------------------------");
 
-        UUID x = UUID.randomUUID();
-        list.removeById(x);
-        list.removeById(trans1.getIdentifier());
+        System.out.println("============================================");
+
+
+        u1.getTransactionsList().removeTransactionById(t1.getId().toString());
+        System.out.println(u1.getTransactionsList().getSize());
+        u1.getTransactionsList().printList();
+
+//        u1.getTransactionsList().removeTransactionById(t1.getId().toString());
+//        System.out.println(u1.getTransactionsList().getSize());
+//        u1.getTransactionsList().printList();
+
+        u1.getTransactionsList().removeTransactionById(t2.getId().toString());
+        System.out.println(u1.getTransactionsList().getSize());
+        u1.getTransactionsList().printList();
+
+        u1.getTransactionsList().removeTransactionById(t2.getId().toString());
+        u1.getTransactionsList().printList();
+
+
+        System.out.println("============================================");
+        Transaction[] tmp = u2.getTransactionsList().toArrayTrans();
+        for (Transaction t : tmp) {
+            System.out.println(t.toString());
+        }
     }
 }

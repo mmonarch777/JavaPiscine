@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import school21.spring.service.models.User;
 import school21.spring.service.repositories.UsersRepository;
-import school21.spring.service.repositories.UsersRepositoryJdbcImpl;
-import school21.spring.service.repositories.UsersRepositoryJdbcTemplateImpl;
 
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ public class UsersServiceImpl implements UsersService{
     @Override
     public String signUp(String email) {
         String password = UUID.randomUUID().toString();
-        if (email == null || email.equals("") || email.length() < 6) {
+        if (email == null || email.length() < 6) {
             System.out.println("Invalid email");
             return null;
         }

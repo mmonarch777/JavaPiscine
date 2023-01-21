@@ -1,5 +1,5 @@
 package printer;
 
 public interface Printer {
-    void print(String text);
+    void print(String str);
 }

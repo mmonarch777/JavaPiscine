@@ -3,26 +3,23 @@ package edu.school21.repositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-
 import javax.sql.DataSource;
 import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EmbeddedDataSourceTest {
-
-    private DataSource dataSource;
+    private DataSource ds;
 
     @BeforeEach
-    public void init() {
-        dataSource = new EmbeddedDatabaseBuilder()
+    void init() {
+        ds = new EmbeddedDatabaseBuilder()
                 .addScript("schema.sql")
                 .addScript("data.sql")
                 .build();
     }
 
     @Test
-    void connectionTest() throws SQLException {
-        assertNotNull(dataSource.getConnection());
+    void checkConnection() throws SQLException {
+        assertNotNull(ds.getConnection());
     }
 }

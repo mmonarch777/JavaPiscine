@@ -1,21 +1,16 @@
+package day01.ex00;
+
+import java.util.UUID;
+
 public class Program {
     public static void main(String[] args) {
-        User mikle = new User(1, "Mikle", 10000);
-        User yrik = new User(2, "Yrick", 1000);
-        User user = new User(3, "User", -1);
+        User u1 = new User("Mikle", 1000);
+        User u2 = new User("Yr", 10);
+        Transaction t = new Transaction(u1, u2, -100, Transaction.Category.DEBIT);
 
-        Transaction t1 = Transaction.makeTr(yrik, mikle, Transaction.TransactionType.DEBIT, 1000);
-        System.out.println(t1.getIdentifier());
-        System.out.println(t1.getTransactionType());
-        System.out.println("Mikle balance: " + mikle.getBalance());
-        System.out.println("Yrik balance: " + yrik.getBalance());
-        Transaction t2 = Transaction.makeTr(yrik, mikle, Transaction.TransactionType.CREDIT, -1000);
-        System.out.println(t2.getIdentifier());
-        System.out.println(t2.getTransactionType());
-        System.out.println("Mikle balance: " + mikle.getBalance());
-        System.out.println("Yrik balance: " + yrik.getBalance());
-        Transaction t3 = Transaction.makeTr(yrik, mikle, Transaction.TransactionType.DEBIT, -1000);
-        Transaction t4 = Transaction.makeTr(yrik, mikle, Transaction.TransactionType.CREDIT, +1000);
-        Transaction t5 = Transaction.makeTr(yrik, mikle, Transaction.TransactionType.CREDIT, -10000);
+        System.out.println(u1.toString());
+        System.out.println(u2.toString());
+        System.out.println(t);
+
     }
 }

@@ -1,4 +1,3 @@
-
 package edu.school21.printer.logic;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;

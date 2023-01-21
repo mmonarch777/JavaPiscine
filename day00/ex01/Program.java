@@ -1,31 +1,31 @@
+package day00.ex01;
+
+
 import java.util.Scanner;
 
 public class Program {
-    public static void error() {
-        System.out.println("IllegalArgument");
-        System.exit(-1);
-    }
-
     public static void main(String[] args) {
-        Scanner sc = new Scanner (System.in);
-        int step = 14;
-        int number = sc.nextInt();
-
-        if (number < 2)
-            error();
-
+        Scanner s = new Scanner(System.in);
+        try {
+            double num = s.nextDouble();
+            if (num <= 1) {
+                System.err.println("IllegalArgument");
+                System.exit(-1);
+            }
+            primeNumber(num);
+        } catch (Exception exception) {
+            System.err.println("It'll work out next time...");
+        }
+    }
+    static void primeNumber(double num) {
         int i = 2;
-        while (i * i <= number)
-        {
-            if (number % i == 0 && number != i)
-            {
-                System.out.println("false " + step);
+        while (i * i <= num) {
+            if (num % i == 0 && num != i) {
+                System.out.println("false " + (i - 1));
                 System.exit(0);
             }
-            step++;
             i++;
         }
-        System.out.println("true " + step);
+        System.out.println("true " + (i - 1));
     }
-
 }

@@ -1,9 +1,5 @@
-# making directory
-rm -rf target
-mkdir target
+#Put the file ti.bmp to directory ImagesToChar.
+#Or change path "./it.bmp" on the path to the file ti.bmp
 
-# compiling files
 javac src/java/edu/school21/printer/*/*.java -d target
-
-# starting program
-java -classpath target edu.school21.printer.app.Program . 0 /Users/mmonarch/Desktop/it.bmp
+java -cp ./target/ edu.school21.printer.app.Program . 0 ./it.bmp

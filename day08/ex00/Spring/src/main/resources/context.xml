@@ -6,48 +6,62 @@
     http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="processorLow"
-          class="preprocessor.PreProcessorToLowerImpl">
+    <bean id="preProcessorU" class="preprocessor.PreProcessorToUpperImpl"/>
+
+    <bean id="preProcessorL" class="preprocessor.PreProcessorToLowerImpl"/>
+
+
+
+    <bean id="rStandardU" class="renderer.RendererStandartImpl">
+        <constructor-arg name="preProcessor" ref="preProcessorU"/>
     </bean>
 
-    <bean id="processorUp"
-          class="preprocessor.PreProcessorToUpperImpl">
+    <bean id="rStandardL" class="renderer.RendererStandartImpl">
+        <constructor-arg name="preProcessor" ref="preProcessorL"/>
     </bean>
 
-    <bean id = "rendererErr"
-          class="renderer.RendererErrImpl">
-        <constructor-arg name="preProcessor" ref = "processorLow" />
+    <bean id="rendererErrU" class="renderer.RendererErrImpl">
+        <constructor-arg name="preProcessor" ref="preProcessorU"/>
     </bean>
 
-    <bean id = "rendererSt"
-          class="renderer.RendererStandartImpl">
-        <constructor-arg name="preProcessor" ref = "processorUp" />
-    </bean>
-
-    <bean id="printerWithPrefixSt"
-          class="printer.PrinterWithPrefixImpl">
-        <constructor-arg name="renderer" ref="rendererSt"/>
-        <property name="prefix" value="IT IS SPARTA!!!"/>
-    </bean>
-
-    <bean id="printerWithPrefixErr"
-          class="printer.PrinterWithPrefixImpl">
-        <constructor-arg name="renderer" ref="rendererErr"/>
-        <property name="prefix" value="IT IS SPARTA!!!"/>
+    <bean id="rendererErrL" class="renderer.RendererErrImpl">
+        <constructor-arg name="preProcessor" ref="preProcessorL"/>
     </bean>
 
 
 
-
-    <bean id="printerWithPrefixStDate"
-          class="printer.PrinterWithDateTimeImpl">
-        <constructor-arg name="renderer" ref="rendererSt"/>
+    <bean id="printerWithPrefix1" class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rendererErrU"/>
     </bean>
 
-    <bean id="printerWithPrefixErrDate"
-          class="printer.PrinterWithDateTimeImpl">
-        <constructor-arg name="renderer" ref="rendererErr"/>
+    <bean id="printerWithPrefix2" class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rendererErrL"/>
     </bean>
 
+    <bean id="printerWithPrefix3" class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rStandardU"/>
+    </bean>
+
+    <bean id="printerWithPrefix4" class="printer.PrinterWithPrefixImpl">
+        <constructor-arg name="renderer" ref="rStandardL"/>
+    </bean>
+
+
+
+    <bean id="printerWithDate1" class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rendererErrU"/>
+    </bean>
+
+    <bean id="printerWithDate2" class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rendererErrL"/>
+    </bean>
+
+    <bean id="printerWithDate3" class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rStandardU"/>
+    </bean>
+
+    <bean id="printerWithDate4" class="printer.PrinterWithDateTimeImpl">
+        <constructor-arg name="renderer" ref="rStandardL"/>
+    </bean>
 
 </beans>

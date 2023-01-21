@@ -1,42 +1,48 @@
-import java.util.UUID;
+package day01.ex04;
 
 public class Program {
     public static void main(String[] args) {
-        User user1 = new User("user1", 10000);
-        User user2 = new User("user2", 22222);
-        User user3 = new User("user3", 33333);
+        User u1 = new User("one", 200);
+        User u2 = new User("two", 200);
+        User u3 = new User("three", 200);
 
-        TransactionsList list = new TransactionsLinkedList();
-        user1.setTransactionsList(list);
-        user2.setTransactionsList(list);
-        user3.setTransactionsList(list);
+        TransactionsService service = new TransactionsService();
+        service.addUser(u1);
+        service.addUser(u1);
+        service.addUser(u2);
+        service.addUser(u3);
+        System.out.println(service.getUsersList().getAmountUsers());
 
-        Transaction trans1 = Transaction.makeTr(user1, user2, Transaction.TransactionType.CREDIT, -1000);
-        Transaction trans2 = Transaction.makeTr(user2, user3, Transaction.TransactionType.DEBIT, 4342);
-        Transaction trans3 = Transaction.makeTr(user3, user1, Transaction.TransactionType.DEBIT, 500);
-        Transaction trans4 = Transaction.makeTr(user2, user1, Transaction.TransactionType.DEBIT, 100);
+        service.execTransaction(u1.getId(), u2.getId(), 50);
+        System.out.println(u1.getBalance());
+        System.out.println(u2.getBalance());
 
+        System.out.println(u1.getTransactionsList().toArrayTrans()[0].toString());
+        System.out.println(u2.getTransactionsList().toArrayTrans()[0].toString());
+        System.out.println("========================================================");
+        service.execTransaction(u2.getId(), u1.getId(), 50);
+        System.out.println(u1.getBalance());
+        System.out.println(u2.getBalance());
 
-        System.out.println(trans1.getIdentifier());
-        list.add(trans2);
-        System.out.println(trans2.getIdentifier());
-        list.add(trans3);
-        System.out.println(trans3.getIdentifier());
-        list.add(trans4);
-        System.out.println(trans4.getIdentifier());
+        System.out.println(u1.getTransactionsList().toArrayTrans()[1].toString());
+        System.out.println(u2.getTransactionsList().toArrayTrans()[1].toString());
 
-        for (Transaction array : list.toArray()) {
-            System.out.println(array);
+        System.out.println("========================================================");
+
+        for (Transaction tr : service.checkTransactions()) {
+            System.out.println(tr.toString());
         }
-        System.out.println("---------------------------");
-        list.removeById(trans3.getIdentifier());
-        System.out.println("---------------------------");
-        for (Transaction array : list.toArray()) {
-            System.out.println(array);
+
+        System.out.println("========================================================");
+
+        u1.getTransactionsList().addTransaction(new Transaction(u2, u3, 100, Transaction.Category.DEBIT));
+        for (Transaction tr : service.checkTransactions()) {
+            System.out.println(tr.toString());
         }
-        System.out.println("---------------------------");
-        UUID x = UUID.randomUUID();
-        list.removeById(x);
-        list.removeById(trans1.getIdentifier());
+
+        System.out.println("========================================================");
+        u1.setBalance(-100);
+        System.out.println(service.getUserBalance(u1.getId()));
+        service.execTransaction(u1.getId(), u2.getId(), 100);
     }
 }

@@ -1,33 +1,39 @@
+package day01.ex02;
+
 public class User {
-    private final Integer identifier;
-    private final String  name;
+    private final Integer id;
+    private String name;
     private Integer balance;
 
-    public User(String name, Integer balance)
-    {
+    public User(String name, Integer balance) {
+        if (balance < 0) {
+            balance = 0;
+        }
+        if (name == null || name.isEmpty()) {
+            System.err.println("Wrong name");
+            System.exit(-1);
+        }
         this.name = name;
-        if (balance > 0) {
-            this.balance = balance;
-        }
-        else {
-            this.balance = 0;
-            System.out.println(name + ": your balance is 0.");
-        }
-        this.identifier = UserIdsGenerator.getInstance().generateId();
+        this.balance = balance;
+        id = UserIdsGenerator.getGenerator().generateId();
     }
 
-    public void setBalance(Integer balance) {
-        this.balance += balance;
+    public Integer getId() {
+        return id;
     }
 
-    public int getBalance() {
+    public String getName() {
+        return name;
+    }
+
+    public Integer getBalance() {
         return balance;
     }
 
-    public Integer getIdentifier() {
-        return identifier;
-    }
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return ("\nidentifier : " + id +
+                "\nname       : " + name +
+                "\nbalance    : " + balance);
     }
 }

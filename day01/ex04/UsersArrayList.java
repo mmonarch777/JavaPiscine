@@ -1,51 +1,89 @@
-public class UsersArrayList implements UsersList{
-    private static final int MAX_NUMBERS_USERS = 10;
-    private User array[];
-    private Integer usersAmount;
+package day01.ex04;
 
-    public UsersArrayList() {
-        this.array = new User[MAX_NUMBERS_USERS];
-        this.usersAmount = 0;
+
+import java.util.UUID;
+
+public class UsersArrayList implements UsersList {
+    private static final UsersArrayList LIST = new UsersArrayList();
+    private User[] array;
+    private Integer amountUsers;
+
+    private UsersArrayList() {
+        array = new User[10];
+        amountUsers = 0;
+    }
+
+    public static UsersArrayList getUserList(){
+        return LIST;
     }
 
     @Override
-    public void add(User user) {
-        if (array.length == usersAmount) {
-            User[] newArray = new User[usersAmount * 2];
-            for (int i = 0; i < array.length; i++) {
-                newArray[i] = array[i];
-            }
-            array = newArray;
+    public void addUser(User user) {
+        if (user == null) {
+            return;
         }
-        array[usersAmount] = user;
-        usersAmount++;
+        int i = 0;
+        if (array.length == getAmountUsers()) {
+            User[] mass = new User[array.length*2];
+            for (; i < array.length; i++) {
+                mass[i] = array[i];
+            }
+            array = mass;
+        }
+        for(; i < array.length; i++) {
+            if (array[i] != null && array[i].getId().equals(user.getId())) {
+                System.out.println("User already inside");
+                return;
+            }
+            if (array[i] == null) {
+                array[i] = user;
+                break;
+            }
+        }
+        ++amountUsers;
     }
 
     @Override
-    public Integer getAmountUsers() {
-        return this.usersAmount;
-    }
-
-    @Override
-    public User retrieveById(Integer id) throws UserNotFoundException {
-        for (int i = 0; i < usersAmount; i++) {
-            if (id.equals(array[i].getIdentifier())) {
+    public User getUserById(UUID id) {
+        int len = getAmountUsers();
+        for (int i = 0; i < len; i++) {
+            if (array[i].getId().equals(id)) {
                 return array[i];
             }
         }
-        throw new UserNotFoundException("ID", id);
+        throw new UserNotFoundException(id + " : wrong id");
     }
 
     @Override
-    public User retrieveByIndex(Integer index) throws UserNotFoundException {
-        if (index < 0 || index > usersAmount)
-            throw new UserNotFoundException("INDEX", index);
+    public User getUserByIndex(Integer index) throws UserNotFoundException {
+        if (index < 0 || index >= array.length) {
+            throw new UserNotFoundException(index + " : index out of bounds..");
+        }
         return array[index];
+    }
+
+    @Override
+    public int getAmountUsers() {
+
+        return amountUsers;
+    }
+
+    public int getLength() {
+        return array.length;
+    }
+
+    public void printUsers() {
+        for (User user : array) {
+            if (user == null) {
+                break;
+            }
+            System.out.println(user);
+        }
     }
 }
 
-class UserNotFoundException extends Exception {
-    UserNotFoundException(String str, Integer num) {
-        System.out.println("User " + str + ": " + num + " doesn't exist");
+class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String message) {
+        super(message);
     }
 }

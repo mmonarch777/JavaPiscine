@@ -1,8 +1,6 @@
-DROP TABLE IF EXISTS products;
-
-CREATE TABLE products
-(
-    id      INTEGER IDENTITY PRIMARY KEY,
-    name    VARCHAR(100) NOT NULL,
-    price   BIGINT NOT NULL
-    );
+drop table if exists Product;
+create table Product (
+    id integer identity primary key,
+    name varchar(30) not null unique,
+    price integer not null
+);

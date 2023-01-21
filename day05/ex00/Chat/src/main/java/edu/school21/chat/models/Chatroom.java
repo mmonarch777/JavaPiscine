@@ -1,5 +1,6 @@
 package edu.school21.chat.models;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,30 +10,28 @@ public class Chatroom {
     private User owner;
     private List<Message> messageList;
 
-
-    Chatroom (String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Chatroom chatroom = (Chatroom) o;
-        return id == chatroom.id && owner == chatroom.owner && Objects.equals(name, chatroom.name);
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, owner);
+        return Objects.hash(id, name, owner, messageList);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) { return true; }
+        if (obj == null || getClass() != obj.getClass()) { return false; }
+        Chatroom cr = (Chatroom) obj;
+        return Objects.equals(id, cr.id) && Objects.equals(name, cr.name)
+                && Objects.equals(owner, cr.owner) && Objects.equals(messageList, ((Chatroom) obj).messageList);
+    }
+
 
     @Override
     public String toString() {
         return "Chatroom{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", owner=" + owner +
+                ", owner='" + owner + '\'' +
+                ", messages=" + messageList +
                 '}';
     }
 }

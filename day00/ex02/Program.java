@@ -1,47 +1,44 @@
+package day00.ex02;
+
 import java.util.Scanner;
 
 public class Program {
-    public static int count(int number)
-    {
-        int sum = 0;
+    final static int FINISH = 42;
 
-        while (number > 0)
-        {
-            sum += number % 10;
-            number /= 10;
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+        int count = 0;
+        double number = 0;
+        while (number != FINISH) {
+            number = s.nextDouble();
+            if (number < 2) {
+                System.err.println("IllegalArgument");
+                continue;
+            }
+            if (isPrimeNumb(number)) {
+                count++;
+            }
         }
-        return sum;
+        System.out.println("Count of coffee-request - " + count);
     }
-
-    public static boolean check(int number)
-    {
+    static boolean isPrimeNumb(double count) {
+        int number = summ(count);
         int i = 2;
-
-        while (i * i <= number)
-        {
-            if (number % i == 0)
+        while (i * i < number) {
+            if (number % i == 0 && i != number) {
                 return false;
+            }
             i++;
         }
         return true;
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int number = 0;
-        int amount = 0;
-
-        while (number != 42)
-        {
-            number = sc.nextInt();
-            if (number < 2)
-            {
-                System.out.println("IllegalArgument");
-                continue;
-            }
-            if (check(count(number)))
-                amount++;
+    static int summ(double number) {
+        int summ = 0;
+        while (number > 0) {
+            summ += number % 10;
+            number = number / 10;
         }
-        System.out.println("Count of coffee-request - " + amount);
+        return summ;
     }
 }

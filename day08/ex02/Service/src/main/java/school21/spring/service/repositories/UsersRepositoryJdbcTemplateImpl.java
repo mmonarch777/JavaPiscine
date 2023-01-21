@@ -70,5 +70,4 @@ public class UsersRepositoryJdbcTemplateImpl extends JdbcTemplate implements Use
             return user;
         }
     }
-
 }

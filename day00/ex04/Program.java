@@ -1,3 +1,7 @@
+package day00.ex04;
+
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
 import java.util.Scanner;
 
 public class Program {
@@ -12,7 +16,7 @@ public class Program {
         return i;
     }
 
-    public static void sortirng(char[] allSymbols, int[] amountCurSym)
+    public static void sorting(char[] allSymbols, int[] amountCurSym)
     {
         char charBuf;
         int intBuf;
@@ -80,7 +84,7 @@ public class Program {
             else
                 amountCurSym[id] += 1;
         }
-        sortirng(allSymbols, amountCurSym);
+        sorting(allSymbols, amountCurSym);
         int size = realSize(amountCurSym);
         for (int i = 0; i < size; i++)
         {
@@ -95,7 +99,10 @@ public class Program {
                 break;
             gridAmount[i] = (amountCurSym[i] * 10) / maxAmount;
         }
-        size = realSize(gridAmount);
+        size = realSize(amountCurSym);
+        if (size > 10) {
+            size = 10;
+        }
         int height = 11;
         System.out.println();
         while (height > 0)

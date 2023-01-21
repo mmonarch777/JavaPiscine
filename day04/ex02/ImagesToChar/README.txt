@@ -1,4 +1,3 @@
-# making directory
 rm -rf target lib
 mkdir target lib
 
@@ -9,7 +8,7 @@ curl -O https://repo1.maven.org/maven2/com/diogonunes/JCDP/2.0.3.1/JCDP-2.0.3.1.
 cd ..
 
 # compiling files
-javac -d target -sourcepath src/java -cp lib/JCDP-2.0.3.1.jar:lib/jcommander-1.78.jar:. src/java/edu/school21/printer/*/*.java
+javac -d target -classpath lib/JCDP-2.0.3.1.jar:lib/jcommander-1.78.jar src/java/edu/school21/printer/*/*.java
 
 # copy resources
 cp -R src/resources target/

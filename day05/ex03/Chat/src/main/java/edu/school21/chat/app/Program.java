@@ -1,6 +1,5 @@
 package edu.school21.chat.app;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import edu.school21.chat.models.Chatroom;
 import edu.school21.chat.models.Message;
@@ -8,79 +7,119 @@ import edu.school21.chat.models.User;
 import edu.school21.chat.repositories.MessagesRepository;
 import edu.school21.chat.repositories.MessagesRepositoryJdbcImpl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class Program {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
+        try (HikariDataSource dataSource = new HikariDataSource()){
+
+            initDataSource(dataSource);
+
+            updateMessage(dataSource);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void updateMessage(HikariDataSource dataSource) {
+        MessagesRepository mr = new MessagesRepositoryJdbcImpl(dataSource);
+        Optional<Message> mes = mr.findById(2);
+
+        if (mes.isPresent()) {
+            Message message = mes.get();
+            System.out.println("Message before: \n" + message);
+            message.setText("new message");
+            message.setTime_date(Timestamp.valueOf(LocalDateTime.now()));
+//            message.setTime_date(null);
+            message.setAuthor(new User(1L, "hel", "hel", null, null));
+            mr.update(message);
+            Optional<Message> m = mr.findById(message.getId());
+            System.out.println("\nMessage after: \n" +m.get());
+        }
+    }
+
+    public static void saveMessage(HikariDataSource dataSource) {
+        User author = new User(0L, "user", "777", new ArrayList<Chatroom>(), new ArrayList<Chatroom>());
+        Chatroom room = new Chatroom(5L, "myRoom", author, new ArrayList<Message>());
+        Message message = new Message(null, author, room, "Hello world", Timestamp.valueOf(LocalDateTime.now()));
+
+        MessagesRepository mr = new MessagesRepositoryJdbcImpl(dataSource);
+        mr.save(message);
+        mr.save(message);
+        System.out.println(message.getId());
+        System.out.println(mr.findById(message.getId()).get());
+    }
+    public static void initDataSource(HikariDataSource dataSource) {
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost/");
+        dataSource.setUsername("mmonarch");
+        dataSource.setPassword(null);
+    }
+    public static void createTabls(HikariDataSource dataSource) {
+        Connection connection = null;
         try {
-            HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
-            hikariConfig.setUsername("postgres");
-            hikariConfig.setPassword("postgres");
-            HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
-            MessagesRepository messagesRepository = new MessagesRepositoryJdbcImpl(hikariDataSource);
+            connection = dataSource.getConnection();
+            if (connection == null) {
+                System.err.println("Error: connection DB");
+                System.exit(-1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: connection DB");
+            System.exit(-1);
+        }
+        List<String> schema = null;
+        List<String> data = null;
+        try {
+            schema = Files.readAllLines(Paths.get("src/main/resources/schema.sql"));
+            data = Files.readAllLines(Paths.get("src/main/resources/data.sql"));
+        } catch (IOException e) {
+            System.err.println("Error: file not found");
+            System.exit(-1);
+        }
+        execSqlFile(connection, schema);
+        execSqlFile(connection, data);
 
-            {
-                Optional<Message> messageOptional = messagesRepository.findById(23L);
-                if (messageOptional.isPresent()) {
-                    Message message = messageOptional.get();
-                    message.setText("ROMAN");
-//                    message.setDateTime(null);
-                    messagesRepository.update(message);
+    }
 
+    public static void getMessageById(HikariDataSource dataSource) {
+        MessagesRepository mr = new MessagesRepositoryJdbcImpl(dataSource);
+        System.out.println("Enter a message ID");
+        long id = -1;
+        try(Scanner scanner = new Scanner(System.in)) {
+            id = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            System.err.println("Error: input not long number");
+            System.exit(-1);
+        }
+
+        Optional<Message> message = mr.findById(id);
+        if (message.isPresent()) {
+            System.out.println(message.get());
+        } else {
+            System.out.println("null");
+        }
+    }
+    public static void execSqlFile(Connection connection, List<String> file) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            for (String line : file) {
+                builder.append(line);
+                if (line.endsWith(";")) {
+                    connection.createStatement().execute(builder.toString());
+                    builder.setLength(0);
                 }
             }
-            System.out.println("DB already updated");
-            System.out.println("--------------------------------");
-            System.out.println("👇Exceptions:");
-            try {
-                User tmpU = new User(21L, "user21", "user21_password", null, null);
-                Chatroom tmpR = new Chatroom(21L, "newroom", tmpU, null);
-                Message tmpM = new Message(21L, tmpU, tmpR, "21 message", null);
-                tmpM.setText("Bye");
-                tmpM.setDateTime(null);
-                messagesRepository.update(tmpM);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println();
-            }
-
-            try {
-                messagesRepository.update(null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println();
-            }
-
-            try {
-                User tmpU = new User(5L, "user21", "user21_password", null, null);
-                Chatroom tmpR = new Chatroom(21L, "newroom", tmpU, null);
-                Message tmpM = new Message(5L, tmpU, tmpR, "21 message", null);
-                tmpM.setText("Bye");
-                tmpM.setDateTime(null);
-                messagesRepository.update(tmpM);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println();
-            }
-
-            try {
-                User tmpU = new User(21L, "user21", "user21_password", null, null);
-                Chatroom tmpR = new Chatroom(5L, "newroom", tmpU, null);
-                Message tmpM = new Message(5L, tmpU, tmpR, "21 message", null);
-                tmpM.setText("Bye");
-                tmpM.setDateTime(null);
-                messagesRepository.update(tmpM);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println();
-            }
-
-            hikariDataSource.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println();
+        } catch (SQLException e) {
+            System.err.println("Wrong command inside schema.sql");
+            System.err.println(e.getMessage());
+            System.exit(-1);
         }
     }
 }

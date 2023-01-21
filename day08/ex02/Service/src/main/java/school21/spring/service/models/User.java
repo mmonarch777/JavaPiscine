@@ -41,12 +41,8 @@ public class User {
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public int hashCode() {
+        return Objects.hash(id, email, password);
     }
 
     @Override
@@ -58,7 +54,11 @@ public class User {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, email, password);
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email +
+                "', password='" + password +
+                "'}";
     }
 }

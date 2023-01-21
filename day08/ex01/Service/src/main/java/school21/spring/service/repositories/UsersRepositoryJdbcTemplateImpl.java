@@ -1,5 +1,6 @@
 package school21.spring.service.repositories;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import school21.spring.service.models.User;
@@ -10,50 +11,48 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class UsersRepositoryJdbcTemplateImpl extends JdbcTemplate implements UsersRepository {
-    public DataSource template;
+public class UsersRepositoryJdbcTemplateImpl implements UsersRepository{
+    private final JdbcTemplate jdbc;
 
-    private final String SQL_FIND_BY_ID = "SELECT * FROM users WHERE id=?;";
-    private final String SQL_SAVE = "INSERT INTO users (email) VALUES(?);";
-    private final String SQL_UPDATE = "UPDATE users SET email = ? WHERE id = ?;";
-    private final String SQL_DELETE = "DELETE FROM users WHERE id=?;";
-    private final String SQL_FIND_ALL = "SELECT * FROM users;";
-    private final String SQL_FIND_BY_EMAIL = "SELECT * FROM users WHERE id=?;";
+    private final String SQL_FIND_BY_ID = "select * from users where id=?;";
+    private final String SQL_SAVE = "insert into users (email) values(?);";
+    private final String SQL_UPDATE = "update users set email = ? where id=?;";
+    private final String SQL_DELETE = "delete from users where id=?;";
+    private final String SQL_FIND_ALL = "select * from users;";
+    private final String SQL_FIND_BY_EMAIL = "select * from users where id=?;";
 
     public UsersRepositoryJdbcTemplateImpl(DataSource dataSource) {
-        super(dataSource);
-        this.template = dataSource;
+        this.jdbc = new JdbcTemplate(dataSource);
     }
-
     @Override
     public User findById(Long id) {
-        return query(SQL_FIND_BY_ID, new UserMapper(), new Object[]{id})
+        return jdbc.query(SQL_FIND_BY_ID, new UserMapper(), new Object[]{id})
                 .stream().findAny().orElse(null);
     }
 
     @Override
     public List<User> findAll() {
-        return query(SQL_FIND_ALL, new UserMapper());
+        return jdbc.query(SQL_FIND_ALL, new UserMapper());
     }
 
     @Override
     public void save(User entity) {
-        update(SQL_SAVE, entity.getEmail());
+        jdbc.update(SQL_SAVE, entity.getEmail());
     }
 
     @Override
     public void update(User entity) {
-        update(SQL_UPDATE, entity.getEmail(), entity.getId());
+        jdbc.update(SQL_UPDATE, entity.getEmail(), entity.getId());
     }
 
     @Override
     public void delete(Long id) {
-        update(SQL_DELETE, id);
+        jdbc.update(SQL_DELETE, id);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        User user = query(SQL_FIND_BY_EMAIL, new UserMapper(), new Object[]{email})
+        User user = jdbc.query(SQL_FIND_BY_EMAIL, new UserMapper(), new Object[]{email})
                 .stream().findAny().orElse(null);
         return Optional.of(user);
     }

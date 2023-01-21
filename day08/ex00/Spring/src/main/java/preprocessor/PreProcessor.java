@@ -1,5 +1,5 @@
 package preprocessor;
 
 public interface PreProcessor {
-    String preProcess(String text);
+    String preProcess(String str);
 }

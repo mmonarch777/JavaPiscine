@@ -1,7 +1,7 @@
-import java.util.UUID;
+package day01.ex03;
 
 public interface TransactionsList {
-    void add(Transaction transaction);
-    void removeById(UUID id);
-    Transaction[] toArray();
+    public void addTransaction(Transaction transaction);
+    public void removeTransactionById(String id) throws TransactionNotFoundException;
+    public Transaction[] toArrayTrans();
 }

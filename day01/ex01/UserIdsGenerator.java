@@ -1,18 +1,18 @@
-public class UserIdsGenerator {
-    private Integer id;
-    private static UserIdsGenerator userIdsGenerator;
+package day01.ex01;
 
+public class UserIdsGenerator {
+    private static final UserIdsGenerator GENERATOR = new UserIdsGenerator();
+    private Integer count;
     private UserIdsGenerator() {
-        id = 0;
+        this.count = 0;
     }
 
-    public static UserIdsGenerator getInstance() {
-        if (userIdsGenerator == null)
-            userIdsGenerator = new UserIdsGenerator();
-        return userIdsGenerator;
+    public static UserIdsGenerator getGenerator() {
+        return GENERATOR;
     }
 
     public Integer generateId() {
-        return ++id;
+        return count++;
     }
+
 }

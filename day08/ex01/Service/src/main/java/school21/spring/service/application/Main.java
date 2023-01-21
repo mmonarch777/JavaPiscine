@@ -12,7 +12,7 @@ public class Main {
         UsersRepositoryJdbcImpl jdbc = context.getBean(UsersRepositoryJdbcImpl.class);
         System.out.println(jdbc.findAll());
         System.out.println("---------Template--------");
-        UsersRepositoryJdbcTemplateImpl  template = context.getBean(UsersRepositoryJdbcTemplateImpl.class);
+        UsersRepositoryJdbcTemplateImpl template = context.getBean(UsersRepositoryJdbcTemplateImpl.class);
         System.out.println(template.findAll());
     }
 }

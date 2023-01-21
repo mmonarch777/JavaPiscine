@@ -1,4 +1,4 @@
-insert into users (email, password) values ('romanbinel@gmail.com', '32411234');
-insert into users (email, password) values ('roman3binel@gmail.com', '324112343');
-insert into users (email, password) values ('romanbeinel@gmail.com', '324f11234');
-insert into users (email, password) values ('roma2nbinel@gmail.com', '3241d1234');
+insert into users (email, password) values ('1@mail.ru', '111');
+insert into users (email, password) values ('2@mail.ru', '222');
+insert into users (email, password) values ('3@mail.ru', '333');
+insert into users (email, password) values ('4@mail.ru', '444');

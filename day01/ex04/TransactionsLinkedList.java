@@ -1,88 +1,86 @@
+package day01.ex04;
+
 import java.util.UUID;
 
-public class TransactionsLinkedList implements TransactionsList {
-    private List start;
-    private List end;
-    private Integer amount;
+public class TransactionsLinkedList implements TransactionsList{
+    private Transaction head;
+    private Transaction last;
+    private Integer sizeList;
+
 
     public TransactionsLinkedList() {
-        this.start = new List(null);
-        this.end = new List(null);
+        this.head = null;
+        this.last = null;
+        this.sizeList = 0;
+    }
 
-        start.next = end;
-        end.prev = start;
-        this.amount = 0;
+
+
+    @Override
+    public void addTransaction(Transaction transaction) {
+        if (transaction == null) {
+            return;
+        }
+        if (head == null) {
+            transaction.setNext(null);
+            transaction.setPrev(null);
+            head = last = transaction;
+        } else {
+            last.setNext(transaction);
+            transaction.setPrev(last);
+            transaction.setNext(null);
+            last = transaction;
+        }
+        ++sizeList;
     }
 
     @Override
-    public void add(Transaction transaction) {
-        (new List(transaction)).addNew(end);
-        amount++;
-    }
-
-    @Override
-    public void removeById(UUID id) throws TransactionNotFoundException {
-        List current = start.next();
-
-        while (current != end) {
-            if (current.getTransaction().getIdentifier().equals(id)) {
-                current.delList();
-                amount--;
-                return;
+    public void removeTransactionById(UUID id) {
+        if (this.head == null) {
+            System.out.println("List is empty");
+            return;
+        }
+        Transaction cur = this.head;
+        while (cur != null) {
+            if (cur.getId().equals(id)) {
+                break;
             }
-            current = current.next;
+            cur = cur.getNext();
         }
-        throw new TransactionNotFoundException("Transaction with this ID don't exist..");
+        if (cur == null) {
+            throw new TransactionNotFoundException("Wrong UUID");
+        }
+        if (cur == head) {
+            head = head.getNext();
+        } else if (cur == last) {
+            last = last.getPrev();
+        } else {
+            cur.getPrev().setNext(cur.getNext());
+        }
+        --sizeList;
     }
 
     @Override
-    public Transaction[] toArray() {
-        Transaction[] transactions = new Transaction[amount];
-
-        List current = start.next();
-        for (int i = 0; i < amount; i++) {
-            transactions[i] = current.getTransaction();
-            current = current.next();
+    public Transaction[] toArrayTrans() {
+        Transaction[] mass = new Transaction[getSize()];
+        int i = 0;
+        Transaction cur = this.head;
+        while (cur != null) {
+            mass[i++] = cur;
+            cur = cur.getNext();
         }
-        return transactions;
+        return mass;
     }
 
-    private static class List {
-        private Transaction transaction;
-        private List next;
-        private List prev;
-
-        public List(Transaction transaction) {
-            this.transaction = transaction;
-        }
-
-        public void delList() {
-            next.prev =prev;
-            prev.next = next;
-            next = null;
-            prev = null;
-        }
-
-        public void addNew(List end)
-        {
-            prev = end.prev;
-            prev.next = this;
-            end.prev = this;
-            next = end;
-        }
-
-        public Transaction getTransaction() {
-            return transaction;
-        }
-        public List next() {
-            return next;
-        }
+    public int getSize() {
+        return this.sizeList;
     }
 
-}
-
-class TransactionNotFoundException extends RuntimeException {
-    public TransactionNotFoundException(String str) {
-        super(str);
+    public void printList() {
+        Transaction cur = head;
+        while (cur != null) {
+            System.out.println(cur);
+            cur = cur.getNext();
+        }
     }
 }

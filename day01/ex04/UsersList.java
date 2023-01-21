@@ -1,6 +1,10 @@
+package day01.ex04;
+
+import java.util.UUID;
+
 public interface UsersList {
-    void add(User object);
-    User retrieveById(Integer id) throws UserNotFoundException;
-    User retrieveByIndex(Integer index) throws UserNotFoundException;
-    Integer getAmountUsers();
+    public void addUser(User user);
+    public User getUserById(UUID id) throws UserNotFoundException;
+    public User getUserByIndex(Integer index) throws UserNotFoundException;
+    public int getAmountUsers();
 }

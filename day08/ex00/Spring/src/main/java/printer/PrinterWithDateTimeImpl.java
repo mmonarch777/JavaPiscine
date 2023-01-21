@@ -1,17 +1,17 @@
 package printer;
 
-import java.time.LocalDateTime;
 import renderer.Renderer;
 
-public class PrinterWithDateTimeImpl implements Printer {
-    private Renderer renderer;
+import java.time.LocalDateTime;
+
+public class PrinterWithDateTimeImpl implements Printer{
+    private final Renderer renderer;
 
     public PrinterWithDateTimeImpl(Renderer renderer) {
         this.renderer = renderer;
     }
-
     @Override
-    public void print(String text) {
-        renderer.printText(LocalDateTime.now() + " " + text);
+    public void print(String str) {
+        renderer.printText(LocalDateTime.now() + " " + str);
     }
 }
